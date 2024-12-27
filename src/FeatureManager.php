@@ -217,10 +217,6 @@ class FeatureManager
         foreach ($this->stores as $driver) {
             $driver->flushCache();
         }
-
-        if (isset($this->stores['array'])) {
-            $this->stores['array']->getDriver()->flushCache();
-        }
     }
 
     /**

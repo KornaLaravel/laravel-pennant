@@ -13,6 +13,7 @@ use Laravel\Pennant\Contracts\CanListStoredFeatures;
 use Laravel\Pennant\Contracts\DefinesFeaturesExternally;
 use Laravel\Pennant\Contracts\Driver;
 use Laravel\Pennant\Contracts\FeatureScopeable;
+use Laravel\Pennant\Contracts\HasFlushableCache;
 use Laravel\Pennant\Events\AllFeaturesPurged;
 use Laravel\Pennant\Events\DynamicallyRegisteringFeatureClass;
 use Laravel\Pennant\Events\FeatureDeleted;
@@ -36,7 +37,7 @@ use Symfony\Component\Finder\Finder;
 /**
  * @mixin \Laravel\Pennant\PendingScopedFeatureInteraction
  */
-class Decorator implements CanListStoredFeatures, Driver
+class Decorator implements CanListStoredFeatures, Driver, HasFlushableCache
 {
     use Macroable {
         __call as macroCall;
@@ -801,6 +802,10 @@ class Decorator implements CanListStoredFeatures, Driver
     public function flushCache()
     {
         $this->cache = new Collection;
+
+        if ($this->driver instanceof HasFlushableCache) {
+            $this->driver->flushCache();
+        }
     }
 
     /**
